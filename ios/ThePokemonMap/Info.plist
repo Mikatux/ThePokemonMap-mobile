@@ -48,6 +48,12 @@
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+            <!--For pokemon resources img-->
+			<key>www.serebii.net/pokemongo/pokemon/</key>
+            <dict>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
 		</dict>
 	</dict>
 </dict>
