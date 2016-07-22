@@ -11,6 +11,12 @@ var styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  markerText: {
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
+    textAlign: 'center'
+  },
   navbar: {
     alignItems: 'center',
     backgroundColor: '#fff',
