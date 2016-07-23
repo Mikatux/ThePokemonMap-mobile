@@ -49,7 +49,7 @@
 				<true/>
 			</dict>
             <!--For pokemon resources img-->
-			<key>www.serebii.net/pokemongo/pokemon/</key>
+			<key>www.serebii.net</key>
             <dict>
                 <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
                 <true/>
