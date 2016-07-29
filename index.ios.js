@@ -9,27 +9,35 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Navigator
 } from 'react-native';
-import firebase from 'firebase';
-import Home from './pages/Home';
+import Home from './scenes/Home';
+import PokemonInfos from './scenes/PokemonInfos';
 
-var config = {
-  apiKey: "AIzaSyBqYjdbhWjPH65E1OP1qSPnPSgCdA5qH6Q",
-  authDomain: "the-pokemon-map.firebaseapp.com",
-  databaseURL: "https://the-pokemon-map.firebaseio.com",
-  storageBucket: "the-pokemon-map.appspot.com",
-};
-firebase.initializeApp(config);
 
 class ThePokemonMap extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  renderScene(route, navigator) {
+    if (route.name == 'PokeInfos') {
+      return <PokemonInfos pokemonInfos={route.pokemonInfos} navigator={navigator}/>
+
+    }
+    if (route.name == 'Home') {
+      return <Home navigator={navigator}/>
+    }
+  }
+
   render() {
     return (
-      <Home/>
+      <Navigator
+        style={{flex: 1}}
+        initialRoute={{name: 'Home'}}
+        renderScene={ this.renderScene.bind(this) }/>
     );
   }
 }

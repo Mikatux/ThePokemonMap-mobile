@@ -7,8 +7,8 @@ import React, {Component} from 'react';
 import StatusBar from '../components/StatusBar';
 import ActionButton from '../components/ActionButton';
 import {View, Linking, Image, Text} from 'react-native';
-import MapView from 'react-native-maps';
-import styles from '../styles.js'; // fix for iOS : https://github.com/lelandrichardson/react-native-maps/issues/371#issuecomment-231585153
+import MapView from 'react-native-maps';  // fix for iOS : https://github.com/lelandrichardson/react-native-maps/issues/371#issuecomment-231585153
+import styles from '../styles.js';
 
 //import Pokeio from 'pokemon-go-node-api';
 
@@ -25,9 +25,9 @@ class HomePage extends Component {
       .then((response) => {
         let jsonresponse = {};
         try {
-          jsonresponse = Json.parse(response);
+          jsonresponse = response.json();
         }
-        catch (err){
+        catch (err) {
           console.log('response is not json')
         }
         return jsonresponse
@@ -41,6 +41,14 @@ class HomePage extends Component {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  setPokemon() {
+    const pokemonInfos ={imgUri:'http://www.serebii.net/pokemongo/pokemon/005.png',infos:['a','b']}
+    this.props.navigator.push({
+      name: 'PokeInfos',
+      pokemonInfos
+    })
   }
 
   componentDidMount() {
@@ -63,9 +71,9 @@ class HomePage extends Component {
       .then((response) => {
         let jsonresponse = {};
         try {
-          jsonresponse = Json.parse(response);
+          jsonresponse = response.json();
         }
-        catch (err){
+        catch (err) {
           console.log('response is not json')
         }
         return jsonresponse
@@ -85,7 +93,7 @@ class HomePage extends Component {
 
   render() {
     let region = {latitude: 48.8566, longitude: 2.3522};
-    if(this.state.currentPosition && this.state.currentPosition.latitude && this.state.currentPosition.longitude)
+    if (this.state.currentPosition && this.state.currentPosition.latitude && this.state.currentPosition.longitude)
       region = this.state.currentPosition;
 
     return (
@@ -97,10 +105,10 @@ class HomePage extends Component {
           <MapView.Marker coordinate={region}/>
           {this.state.nearPokemons.map(pokemon => (
 
-            <MapView.Marker
+            <MapView.Marker onPress={this.setPokemon.bind(this)}
               coordinate={{latitude: pokemon.latitude, longitude: pokemon.longitude}}
               key={pokemon.id}>
-              <PokemonMarker pokemon={pokemon} showTimeout={true}/>
+              <PokemonMarker pokemon={pokemon} showTimeout={false}/>
             </MapView.Marker>
           ))}
         </MapView>
@@ -116,7 +124,8 @@ class PokemonMarker extends Component {
     this.state = {timeLeft: 1, interval: null}
   }
 
-  getImgUrlFromPokemonNumber(pokemonNumber) {
+  getImgUrlFromPokemonNumber() {
+    const pokemonNumber=this.props.pokemon.pokemonId;
     let fullNumber = '000';
     if (pokemonNumber < 10)
       fullNumber = '00' + pokemonNumber;
@@ -128,10 +137,14 @@ class PokemonMarker extends Component {
   }
 
   componentDidMount() {
-    const interval = setInterval(()=> {
-      this.setState({timeLeft: (this.props.pokemon.expiration_time - new Date().getTime()) / 1000})
-    }, 1000)
-    this.setState({interval});
+    if (this.props.showTimeout) {
+
+      const interval = setInterval(()=> {
+        //console.log(this.props.pokemon.expiration_time)
+        this.setState({timeLeft: (this.props.pokemon.expiration_time * 1000 - new Date().getTime()) / 1000})
+      }, 1000)
+      this.setState({interval});
+    }
   }
 
   componentWillUnmount() {
@@ -153,8 +166,8 @@ class PokemonMarker extends Component {
       timeoutText = <Text style={styles.markerText}>{this.secToString(this.state.timeLeft)} </Text>;
     }
     return (
-      <View>
-        <Image source={{uri: this.getImgUrlFromPokemonNumber(this.props.pokemon.pokemonId)}}
+      <View >
+        <Image source={{uri: this.getImgUrlFromPokemonNumber()}}
                style={{width: 40, height: 40}}/>
         {timeoutText}
       </View>
